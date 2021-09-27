@@ -28,20 +28,21 @@ class NewTaskView {
                 </div>
                 <div class="add-todo-addTask">
                     <i class="fas fa-level-up-alt"></i>
-                    <input type="text" placeholder="Add Task">
+                    <input class="" type="text" placeholder="Add Task">
                 </div>
                 <div class="add-todo-submit">Add</div>
             </form>
         `;
-        let addTodoElem = document.querySelector('.add-todo');
+        const addTodoElem = document.querySelector('.add-todo');
         const timeId = setTimeout(() => {
             addTodoElem.classList.add('open');
             clearTimeout(timeId);
         },10);
+        this.dataInput();
     }
     hide() {
         newTaskElem.style.pointerEvents = 'auto';
-        let addTodoElem = document.querySelector('.add-todo');
+        const addTodoElem = document.querySelector('.add-todo');
         const timeId = setTimeout(() => {
             if(addTodoElem){
                 addTodoElem.classList.remove('open');
@@ -50,13 +51,60 @@ class NewTaskView {
         },10);
         setTimeout(() => {this.bodyElem.innerHTML = "";}, 100);
     }
+    dataInput() {
+        const addToDoSubmitElem = document.querySelector('.add-todo-submit');
+        const addToDoTitle = document.querySelector('.add-todo-title');
+        const addTodoDetails = document.querySelector('.add-todo-details');
+        const addTodoAddTask = document.querySelector('.add-todo-addTask input');
+        let title;
+        let detail;
+        let task;
+        addToDoTitle.addEventListener('change', (e) => {
+            title = e.target.value
+        });
+        addTodoDetails.addEventListener('change', (e) => {
+            detail = e.target.value
+        });
+        addTodoAddTask.addEventListener('change', (e) => {
+            task = e.target.value
+        });
+        addToDoSubmitElem.addEventListener('click',() => {
+            data.push({
+                title,
+                detail,
+                task,
+            });
+            this.hide();
+            const newTask = new NewTask();
+            newTask.show();
+            // console.log(data);
+        });
+    }
+}
+
+class NewTask {
+    constructor() {
+        this.bodyElem = document.createElement('li');
+        this.bodyElem.classList.add('new-task');
+    }
+    show() {
+        for(let i = 0; i < data.length; i++){
+            this.bodyElem.innerHTML = `${data[i].title} detail: ${data[i].detail}`;
+            taskElem.appendChild(this.bodyElem);
+        }
+    }
 }
 
 
+let data = [];
+
+
 let newTaskElem;
+let taskElem;
 
 function addElems() {
     newTaskElem = document.querySelector('.new-task');
+    taskElem = document.querySelector('.task');
 }
 
 window.addEventListener('load', () => {

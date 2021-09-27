@@ -6,6 +6,7 @@ html {
 body {
 	/* overflow-x: hidden; */
 	font-family: 'Roboto', sans-serif;
+    background-color: #EFEFEF;
 }
 
 h1, h2, h3 {
@@ -27,7 +28,7 @@ button {
     height: 50px;
     justify-content: space-between;
     align-items: center;
-    background: #222;
+    background: #FFFFFF;
 }
 
 .site-title {
@@ -85,10 +86,6 @@ button {
 /* section  */
 .section-wrap {
     width: 100vw;
-    height: 10vh;
-}
-
-.task {
     color:rgb(32, 201, 151);
     padding: 1rem 1rem;
 }
@@ -98,15 +95,38 @@ button {
     height: 50px;
     padding: 1rem 1rem;
     overflow: hidden;
-    background-color: #cdcdcd;
+    background-color: #FFFFFF;
     border-radius: 20px;
     max-width: 1260px;
     cursor: pointer;
     transition: all 0.3s;
+    margin: 0 auto;
+    margin-bottom: 1rem;
 }
 
 .new-task:hover {
     background-color:#dcffe4;
+}
+
+.add-task {
+    display: flex;
+    width: 90%;
+    height: 50px;
+    background-color: #FFFFFF;
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.add-task-finish {
+    color: rgba(150, 241, 214, 1);
+}
+
+.down {
+    transform: rotate(180deg);
+}
+
+.add-task:hover {
+    color: rgb(32, 201, 151);
 }
 
 /* form  */
