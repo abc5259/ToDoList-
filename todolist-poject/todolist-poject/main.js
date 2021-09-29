@@ -121,6 +121,7 @@ class NewTask {
             </section>
             `
             taskElem.appendChild(this.bodyElem);
+            console.log(data);
         }
     }
 }
