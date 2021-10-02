@@ -76,7 +76,7 @@ class NewTaskView {
             });
             this.hide();
             const newTask = new NewTask();
-            newTask.show(title);
+            newTask.show();
             // console.log(data);
         });
     }
@@ -88,62 +88,59 @@ class NewTask {
         this.bodyElem.classList.add('add-task');
     }
     show() {
-
-        for(let i = 0; i < data.length; i++){
             this.bodyElem.innerHTML = `
             <h1 class="add-task-header">
                 <div class="add-task-detail">
                     <i class="fas fa-arrow-down"></i>
                 </div>
-                <label class="add-task-title" for="titleInput-${i}">
-                    <input type="checkbox" id="titleInput-${i}">
+                <label class="add-task-title" for="titleInput-${data.length-1}">
+                    <input type="checkbox" id="titleInput-${data.length-1}">
                     <span class="checkmark"></span>
-                    ${data[i].title}
+                    ${data[data.length-1].title}
                 </label>
                 <div class="add-task-finish">1/3 complete</div>
             </h1>
             `
             taskElem.appendChild(this.bodyElem);
             console.log(data);
-            this.addDetailkDownUP(i);
-        }
+            this.addDetailkDownUP(data.length-1);
     }
     addDetailkDownUP(dataIndex) {
         const downIconElems = document.getElementsByClassName('add-task-detail');
         downIconElems[dataIndex].addEventListener('click', () => {
             const addedSectionkElem = document.createElement('section');
             addedSectionkElem.classList.add('added-task-section');
-           if(down){
             downIconElems[dataIndex].classList.add('down');
-            addedSectionkElem.innerHTML = `
-                <h1 class="added-task-detail">
-                    <span class="detail">Detail:</span>
-                    <span>${data[dataIndex].detail}</span>
-                </h1>
-                <ul class="added-task-ul">
-                    <li class="added-tasks">
-                        <label class="add-task-title added-task-title" for="added-${dataIndex}">
-                            <input type="checkbox" id="added-${dataIndex}">
-                            <span class="checkmark"></span>
-                            ${data[dataIndex].task}
-                        </label>
-                        <span class="delete-btn">
-                            <i class="fas fa-backspace"></i>
-                        </span>
-                    </li>
-                </ul>
-            `;
-            this.bodyElem.appendChild(addedSectionkElem);
-            down = false;
+            if(downIconElems[dataIndex].classList.contains('down') && down){
+                addedSectionkElem.innerHTML = `
+                    <h1 class="added-task-detail">
+                        <span class="detail">Detail:</span>
+                        <span>${data[dataIndex].detail}</span>
+                    </h1>
+                    <ul class="added-task-ul">
+                        <li class="added-tasks">
+                            <label class="add-task-title added-task-title" for="added-${dataIndex}">
+                                <input type="checkbox" id="added-${dataIndex}">
+                                <span class="checkmark"></span>
+                                ${data[dataIndex].task}
+                            </label>
+                            <span class="delete-btn">
+                                <i class="fas fa-backspace"></i>
+                            </span>
+                        </li>
+                    </ul>
+                `;
+                this.bodyElem.appendChild(addedSectionkElem);
+                down = false;
            }else {
-            for(let i = 0; i < this.bodyElem.childNodes.length; i++){
-                if(this.bodyElem.childNodes[i].className
-                &&this.bodyElem.childNodes[i].classList.contains('added-task-section')){
-                    this.bodyElem.removeChild(this.bodyElem.childNodes[i]);
+                for(let i = 0; i < this.bodyElem.childNodes.length; i++){
+                    if(this.bodyElem.childNodes[i].className
+                    &&this.bodyElem.childNodes[i].classList.contains('added-task-section')){
+                        this.bodyElem.removeChild(this.bodyElem.childNodes[i]);
+                    }
                 }
-            }
-            downIconElems[dataIndex].classList.remove('down');
-            down = true;
+                downIconElems[dataIndex].classList.remove('down');
+                down = true;
            }
         });
     }
