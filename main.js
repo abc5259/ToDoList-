@@ -26,11 +26,14 @@ class NewTaskView {
                         <i class="fas fa-arrow-down"></i>
                     </div>
                 </div>
-                <div class="add-todo-addTask">
-                    <i class="fas fa-level-up-alt"></i>
-                    <input class="" type="text" placeholder="Add Task">
-                </div>
-                <div class="add-todo-submit">Add</div>
+                <section class="add-todo-addTask">
+                    <div class="add-todo-addTask-wrap">
+                        <i class="fas fa-level-up-alt"></i>
+                        <input class="add-todo-addTask-wrap__input" type="text" placeholder="Add Task">
+                        <i class="fas fa-plus-circle plusTaskBtn"></i>
+                    </div>
+                </section>
+                <div class="add-todo-btn">Add</div>
             </form>
         `;
         const addTodoElem = document.querySelector('.add-todo');
@@ -39,6 +42,7 @@ class NewTaskView {
             clearTimeout(timeId);
         },10);
         this.dataInput();
+        this.plusTaskBtnClick();
     }
     hide() {
         newTaskElem.style.pointerEvents = 'auto';
@@ -52,33 +56,66 @@ class NewTaskView {
         setTimeout(() => {this.bodyElem.innerHTML = "";}, 100);
     }
     dataInput() {
-        const addToDoSubmitElem = document.querySelector('.add-todo-submit');
-        const addToDoTitle = document.querySelector('.add-todo-title');
-        const addTodoDetails = document.querySelector('.add-todo-details');
-        const addTodoAddTask = document.querySelector('.add-todo-addTask input');
+        const addToDoSubmitBtnElem = document.querySelector('.add-todo-btn');
+        const addToDoTitleElem = document.querySelector('.add-todo-title');
+        const addTodoDetailsElem = document.querySelector('.add-todo-details');
         let title;
         let detail;
-        let task;
-        addToDoTitle.addEventListener('change', (e) => {
+        let task = [];
+        addToDoTitleElem.addEventListener('change', (e) => {
             title = e.target.value
         });
-        addTodoDetails.addEventListener('change', (e) => {
+        addTodoDetailsElem.addEventListener('change', (e) => {
             detail = e.target.value
         });
-        addTodoAddTask.addEventListener('change', (e) => {
-            task = e.target.value
-        });
-        addToDoSubmitElem.addEventListener('click',() => {
+        addToDoSubmitBtnElem.addEventListener('click',() => {
             data.push({
                 title,
                 detail,
-                task,
             });
             this.hide();
             const newTask = new NewTask();
             newTask.show();
-            // console.log(data);
+            console.log(data);
         });
+    }
+
+    plusTaskBtnClick() {
+        const addTaskSectionElem = document.querySelector('.add-todo-addTask');
+        const plusTaskBtnElem = document.querySelector('.plusTaskBtn');
+        plusTaskBtnElem.addEventListener('click',() => {
+            const plusTask = new PlusTask();
+            plusTask.show(addTaskSectionElem);
+            plusTask.data_taskPush();
+        });
+        // this.data_taskPush();
+    }
+
+
+}
+
+class PlusTask {
+    constructor() {
+        this.bodyElem = document.createElement('div');
+        this.bodyElem.classList.add('add-todo-addTask-wrap');
+    }
+    show(parentNode) {
+        this.bodyElem.innerHTML = `
+            <i class="fas fa-level-up-alt"></i>
+            <input class="add-todo-addTask-wrap__input" type="text" placeholder="Add Task">
+        `
+        parentNode.appendChild(this.bodyElem);
+    }
+
+    data_taskPush() {
+        let task = [];
+        const addTodoAddTaskElems = document.querySelectorAll('.add-todo-addTask-wrap__input');
+        console.log(addTodoAddTaskElems);
+        for(let i = 0; i <addTodoAddTaskElems.length; i++) {
+            addTodoAddTaskElems[i].addEventListener('change', () => {
+                task.push(addTodoAddTaskElems[i].value);
+            });
+        }
     }
 }
 
@@ -110,8 +147,8 @@ class NewTask {
         downIconElems[dataIndex].addEventListener('click', () => {
             const addedSectionkElem = document.createElement('section');
             addedSectionkElem.classList.add('added-task-section');
-            downIconElems[dataIndex].classList.add('down');
-            if(downIconElems[dataIndex].classList.contains('down') && down){
+            if(!downIconElems[dataIndex].classList.contains('down')){
+                downIconElems[dataIndex].classList.add('down');
                 addedSectionkElem.innerHTML = `
                     <h1 class="added-task-detail">
                         <span class="detail">Detail:</span>

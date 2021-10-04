@@ -12,7 +12,7 @@
     flex-direction: column;
     max-width: 450px;
     width: 70%;
-    height: 40vh;
+    /* height: 40vh; */
     padding: 1rem 1rem;
     border-radius: 1rem;
     color:rgb(32, 201, 151);
@@ -47,7 +47,7 @@ input[type='text'], textarea{ font-size: 1rem; color:rgb(32, 201, 151); }
 .add-todo-details {
     resize: none;
     margin-bottom: 0.7rem;
-    height: 30px;
+    min-height: 30px;
 }
 
 .add-todo-type {
@@ -77,19 +77,28 @@ input[type='text'], textarea{ font-size: 1rem; color:rgb(32, 201, 151); }
 
 
 .add-todo-addTask {
-    margin-bottom: 10rem;
+    margin-bottom: 5rem;
 }
 
-.add-todo-addTask .fa-level-up-alt {
+.add-todo-addTask-wrap{
+    padding-bottom: 1rem;
+}
+
+.add-todo-addTask-wrap .fa-level-up-alt {
     transform: rotate(90deg);
     margin-right: 1.4rem;
 }
 
-.add-todo-addTask input {
-    width: 80%;
+.add-todo-addTask-wrap input {
+    width: 70%;
 }
-.add-todo-submit {
+
+.plusTaskBtn {
+    cursor: pointer;
+}
+.add-todo-btn {
     width: 70px;
+    align-self: flex-end;
     text-align: center;
     margin: 0 auto;
     background-color: #cdcdcd;
