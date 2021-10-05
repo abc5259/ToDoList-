@@ -36,13 +36,16 @@ class NewTaskView {
                 <div class="add-todo-btn">Add</div>
             </form>
         `;
+        let task = [];
         const addTodoElem = document.querySelector('.add-todo');
         const timeId = setTimeout(() => {
             addTodoElem.classList.add('open');
             clearTimeout(timeId);
         },10);
-        this.dataInput();
-        this.plusTaskBtnClick();
+        this.dataInput(task);
+        this.plusTaskBtnClick(task);
+        const plusTask = new PlusTask();
+        plusTask.data_taskPush(task);
     }
     hide() {
         newTaskElem.style.pointerEvents = 'auto';
@@ -55,13 +58,12 @@ class NewTaskView {
         },10);
         setTimeout(() => {this.bodyElem.innerHTML = "";}, 100);
     }
-    dataInput() {
+    dataInput(task) {
         const addToDoSubmitBtnElem = document.querySelector('.add-todo-btn');
         const addToDoTitleElem = document.querySelector('.add-todo-title');
         const addTodoDetailsElem = document.querySelector('.add-todo-details');
         let title;
         let detail;
-        let task = [];
         addToDoTitleElem.addEventListener('change', (e) => {
             title = e.target.value
         });
@@ -72,6 +74,7 @@ class NewTaskView {
             data.push({
                 title,
                 detail,
+                task
             });
             this.hide();
             const newTask = new NewTask();
@@ -80,19 +83,20 @@ class NewTaskView {
         });
     }
 
-    plusTaskBtnClick() {
+    plusTaskBtnClick(task) {
         const addTaskSectionElem = document.querySelector('.add-todo-addTask');
         const plusTaskBtnElem = document.querySelector('.plusTaskBtn');
         plusTaskBtnElem.addEventListener('click',() => {
             const plusTask = new PlusTask();
             plusTask.show(addTaskSectionElem);
-            plusTask.data_taskPush();
+            plusTask.data_taskPush(task);
         });
         // this.data_taskPush();
     }
 
 
 }
+
 
 class PlusTask {
     constructor() {
@@ -107,18 +111,20 @@ class PlusTask {
         parentNode.appendChild(this.bodyElem);
     }
 
-    data_taskPush() {
-        let task = [];
+    data_taskPush(task) {
         const addTodoAddTaskElems = document.querySelectorAll('.add-todo-addTask-wrap__input');
-        console.log(addTodoAddTaskElems);
+        // console.log(...addTodoAddTaskElems.value);
         for(let i = 0; i <addTodoAddTaskElems.length; i++) {
             addTodoAddTaskElems[i].addEventListener('change', () => {
+                console.log(addTodoAddTaskElems[i].value);
                 task.push(addTodoAddTaskElems[i].value);
+                console.log(task);
             });
         }
     }
 }
 
+// data의 detail/task부분을 보여주는 class
 class NewTask {
     constructor() {
         this.bodyElem = document.createElement('li');
@@ -139,7 +145,6 @@ class NewTask {
             </h1>
             `
             taskElem.appendChild(this.bodyElem);
-            console.log(data);
             this.addDetailkDownUP(data.length-1);
     }
     addDetailkDownUP(dataIndex) {
@@ -154,21 +159,10 @@ class NewTask {
                         <span class="detail">Detail:</span>
                         <span>${data[dataIndex].detail}</span>
                     </h1>
-                    <ul class="added-task-ul">
-                        <li class="added-tasks">
-                            <label class="add-task-title added-task-title" for="added-${dataIndex}">
-                                <input type="checkbox" id="added-${dataIndex}">
-                                <span class="checkmark"></span>
-                                ${data[dataIndex].task}
-                            </label>
-                            <span class="delete-btn">
-                                <i class="fas fa-backspace"></i>
-                            </span>
-                        </li>
-                    </ul>
                 `;
+                const addTaskData = new AddTaskData();
+                addTaskData.show(addedSectionkElem,dataIndex);
                 this.bodyElem.appendChild(addedSectionkElem);
-                down = false;
            }else {
                 for(let i = 0; i < this.bodyElem.childNodes.length; i++){
                     if(this.bodyElem.childNodes[i].className
@@ -177,15 +171,41 @@ class NewTask {
                     }
                 }
                 downIconElems[dataIndex].classList.remove('down');
-                down = true;
            }
         });
     }
 }
 
+// data의 task부분을 보여주는 class
+class AddTaskData {
+    constructor() {
+        this.bodyElem = document.createElement('ul');
+        this.bodyElem.classList.add('added-task-ul');
+    }
+    show(parentNode,dataIndex) {
+        let dataTask = [];
+        for(let i = 0; i < data[dataIndex].task.length; i++) {
+            const liElem = makeElement('li','added-tasks');
+            liElem.innerHTML = `
+                <label class="add-task-title added-task-title" for="${data[dataIndex].task[i]}">
+                    <input type="checkbox" id="${data[dataIndex].task[i]}">
+                    <span class="checkmark"></span>
+                    ${data[dataIndex].task[i]}
+                </label>
+                <span class="delete-btn">
+                    <i class="fas fa-backspace"></i>
+                </span>
+            `
+            // console.log(liElem);
+            dataTask.push(liElem);
+            this.bodyElem.appendChild(dataTask[i]);
+        }
+        parentNode.appendChild(this.bodyElem);
+    }
+}
+
 
 let data = [];
-let down = true;
 
 let newTaskElem;
 let taskElem;
@@ -197,10 +217,25 @@ function addElems() {
     sectionWrapElem = document.querySelector('.section-wrap');
 }
 
+function makeElement(element,className) {
+    const elementElem = document.createElement(element);
+    elementElem.classList.add(className);
+    return elementElem;
+}
+
+function check_overline(forName) {
+    const labelElem = document.getElementById(forName);
+    if(labelElem.checked){
+        labelElem.classList.add('checked');
+    } else {
+        labelElem.classList.remove('checked');
+    }
+}
+
 window.addEventListener('load', () => {
     addElems();
-    const newTaskView = new NewTaskView();
     newTaskElem.addEventListener('click', () => {
+        const newTaskView = new NewTaskView();
         newTaskView.show();
     });
 
