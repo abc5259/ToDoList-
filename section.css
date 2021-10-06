@@ -128,6 +128,10 @@
     color:#222;
 }
 
+.displayNone {
+    display: none;
+}
+
 .added-task-detail {
     display: flex;   
 }

@@ -13,6 +13,7 @@ class NewTaskView {
             }
         });
     }
+
     show() {
         newTaskElem.style.pointerEvents = 'none';
         this.bodyElem.innerHTML = `
@@ -47,6 +48,7 @@ class NewTaskView {
         const plusTask = new PlusTask();
         plusTask.data_taskPush(task);
     }
+
     hide() {
         newTaskElem.style.pointerEvents = 'auto';
         const addTodoElem = document.querySelector('.add-todo');
@@ -58,6 +60,7 @@ class NewTaskView {
         },10);
         setTimeout(() => {this.bodyElem.innerHTML = "";}, 100);
     }
+
     dataInput(task) {
         const addToDoSubmitBtnElem = document.querySelector('.add-todo-btn');
         const addToDoTitleElem = document.querySelector('.add-todo-title');
@@ -91,7 +94,6 @@ class NewTaskView {
             plusTask.show(addTaskSectionElem);
             plusTask.data_taskPush(task);
         });
-        // this.data_taskPush();
     }
 
 
@@ -113,12 +115,11 @@ class PlusTask {
 
     data_taskPush(task) {
         const addTodoAddTaskElems = document.querySelectorAll('.add-todo-addTask-wrap__input');
-        // console.log(...addTodoAddTaskElems.value);
         for(let i = 0; i <addTodoAddTaskElems.length; i++) {
             addTodoAddTaskElems[i].addEventListener('change', () => {
                 console.log(addTodoAddTaskElems[i].value);
                 task.push(addTodoAddTaskElems[i].value);
-                console.log(task);
+                // console.log(task);
             });
         }
     }
@@ -146,30 +147,34 @@ class NewTask {
             `
             taskElem.appendChild(this.bodyElem);
             this.addDetailkDownUP(data.length-1);
+            setTimeout(() => {
+                checkedBoxLineThrough(`titleInput-${data.length-1}`);
+            },30);
     }
     addDetailkDownUP(dataIndex) {
         const downIconElems = document.getElementsByClassName('add-task-detail');
         downIconElems[dataIndex].addEventListener('click', () => {
-            const addedSectionkElem = document.createElement('section');
-            addedSectionkElem.classList.add('added-task-section');
+            let addedSectionkElem;
             if(!downIconElems[dataIndex].classList.contains('down')){
-                downIconElems[dataIndex].classList.add('down');
-                addedSectionkElem.innerHTML = `
-                    <h1 class="added-task-detail">
-                        <span class="detail">Detail:</span>
-                        <span>${data[dataIndex].detail}</span>
-                    </h1>
-                `;
-                const addTaskData = new AddTaskData();
-                addTaskData.show(addedSectionkElem,dataIndex);
-                this.bodyElem.appendChild(addedSectionkElem);
-           }else {
-                for(let i = 0; i < this.bodyElem.childNodes.length; i++){
-                    if(this.bodyElem.childNodes[i].className
-                    &&this.bodyElem.childNodes[i].classList.contains('added-task-section')){
-                        this.bodyElem.removeChild(this.bodyElem.childNodes[i]);
-                    }
+                addedSectionkElem = document.createElement('section');
+                addedSectionkElem.classList.add("added-task-section",`${dataIndex}`);
+                if(!Array.isArray(addedSectionkElem)){
+                    downIconElems[dataIndex].classList.add('down');
+                    addedSectionkElem.innerHTML = `
+                        <h1 class="added-task-detail">
+                            <span class="detail">Detail:</span>
+                            <span>${data[dataIndex].detail}</span>
+                        </h1>
+                    `;
+                    const addTaskData = new AddTaskData();
+                    addTaskData.show(addedSectionkElem,dataIndex);
+                    this.bodyElem.appendChild(addedSectionkElem);
+                }else {
+                    addedSectionkElem[0].classList.remove('displayNone');
                 }
+           }else {
+                addedSectionkElem = document.getElementsByClassName(`added-task-section ${dataIndex}`);
+                addedSectionkElem[0].classList.add('displayNone');
                 downIconElems[dataIndex].classList.remove('down');
            }
         });
@@ -196,9 +201,11 @@ class AddTaskData {
                     <i class="fas fa-backspace"></i>
                 </span>
             `
-            // console.log(liElem);
             dataTask.push(liElem);
             this.bodyElem.appendChild(dataTask[i]);
+            setTimeout(() => {
+                checkedBoxLineThrough(data[dataIndex].task[i]);
+            },30);
         }
         parentNode.appendChild(this.bodyElem);
     }
@@ -219,18 +226,25 @@ function addElems() {
 
 function makeElement(element,className) {
     const elementElem = document.createElement(element);
-    elementElem.classList.add(className);
+    if(className){
+        elementElem.classList.add(className);
+    }
     return elementElem;
 }
 
-function check_overline(forName) {
-    const labelElem = document.getElementById(forName);
-    if(labelElem.checked){
-        labelElem.classList.add('checked');
-    } else {
-        labelElem.classList.remove('checked');
-    }
+function checkedBoxLineThrough(idName) {
+    const inputElem = document.querySelector(`input[id="${idName}"]`);
+    const labelElem = document.querySelector(`label[for="${idName}"]`);
+    console.log(inputElem);
+    labelElem.addEventListener('click', (e) => {
+        if(inputElem.checked){
+            labelElem.classList.add('checked');
+        }else {
+            labelElem.classList.remove('checked');
+        }
+    });
 }
+
 
 window.addEventListener('load', () => {
     addElems();
