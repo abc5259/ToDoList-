@@ -153,12 +153,12 @@ class NewTask {
     }
     addDetailkDownUP(dataIndex) {
         const downIconElems = document.getElementsByClassName('add-task-detail');
+        let addedSectionkElem;
         downIconElems[dataIndex].addEventListener('click', () => {
-            let addedSectionkElem;
             if(!downIconElems[dataIndex].classList.contains('down')){
-                addedSectionkElem = document.createElement('section');
-                addedSectionkElem.classList.add("added-task-section",`${dataIndex}`);
-                if(!Array.isArray(addedSectionkElem)){
+                if(!addedSectionkElem){
+                    addedSectionkElem = document.createElement('section');
+                    addedSectionkElem.classList.add("added-task-section",`${dataIndex}`);
                     downIconElems[dataIndex].classList.add('down');
                     addedSectionkElem.innerHTML = `
                         <h1 class="added-task-detail">
@@ -166,15 +166,16 @@ class NewTask {
                             <span>${data[dataIndex].detail}</span>
                         </h1>
                     `;
-                    const addTaskData = new AddTaskData();
-                    addTaskData.show(addedSectionkElem,dataIndex);
+                    const addTaskData = new AddTaskData(addedSectionkElem);
+                    addTaskData.show(dataIndex);
                     this.bodyElem.appendChild(addedSectionkElem);
                 }else {
-                    addedSectionkElem[0].classList.remove('displayNone');
+                    addedSectionkElem.classList.remove('displayNone');
+                    downIconElems[dataIndex].classList.add('down');
                 }
            }else {
-                addedSectionkElem = document.getElementsByClassName(`added-task-section ${dataIndex}`);
-                addedSectionkElem[0].classList.add('displayNone');
+                // addedSectionkElem = document.getElementsByClassName(`added-task-section ${dataIndex}`);
+                addedSectionkElem.classList.add('displayNone');
                 downIconElems[dataIndex].classList.remove('down');
            }
         });
@@ -183,12 +184,14 @@ class NewTask {
 
 // data의 task부분을 보여주는 class
 class AddTaskData {
-    constructor() {
+    constructor(parentNode) {
         this.bodyElem = document.createElement('ul');
         this.bodyElem.classList.add('added-task-ul');
+        this.parentNode = parentNode;
+        this.dataTask = [];
     }
-    show(parentNode,dataIndex) {
-        let dataTask = [];
+    show(dataIndex) {
+        this.bodyElem.innerHTML = "";
         for(let i = 0; i < data[dataIndex].task.length; i++) {
             const liElem = makeElement('li','added-tasks');
             liElem.innerHTML = `
@@ -198,16 +201,31 @@ class AddTaskData {
                     ${data[dataIndex].task[i]}
                 </label>
                 <span class="delete-btn">
-                    <i class="fas fa-backspace"></i>
+                    <i class="fas fa-backspace deletBtn-${dataIndex}-${i}"></i>
                 </span>
             `
-            dataTask.push(liElem);
-            this.bodyElem.appendChild(dataTask[i]);
+            this.dataTask.push(liElem);
+            // console.log(this.dataTask);
+            this.bodyElem.appendChild(this.dataTask[i]);
+            console.log(this.dataTask[i],this.bodyElem.innerHTML);
             setTimeout(() => {
                 checkedBoxLineThrough(data[dataIndex].task[i]);
+                this.deleteTask(i,dataIndex);
             },30);
         }
-        parentNode.appendChild(this.bodyElem);
+        this.parentNode.appendChild(this.bodyElem);
+    }
+
+    deleteTask(deleteBtnIndex,dataIndex) {
+        let deleteBtnElem = document.querySelector(`.deletBtn-${dataIndex}-${deleteBtnIndex}`);
+        console.log(deleteBtnElem);
+        deleteBtnElem.addEventListener('click', () => {
+            console.log("click");
+            this.dataTask.splice(deleteBtnIndex,1);
+            data[dataIndex].task.splice(deleteBtnIndex,1);
+            // console.log(this.dataTask);
+            this.show(dataIndex);
+        });
     }
 }
 
@@ -235,7 +253,7 @@ function makeElement(element,className) {
 function checkedBoxLineThrough(idName) {
     const inputElem = document.querySelector(`input[id="${idName}"]`);
     const labelElem = document.querySelector(`label[for="${idName}"]`);
-    console.log(inputElem);
+    // console.log(inputElem);
     labelElem.addEventListener('click', (e) => {
         if(inputElem.checked){
             labelElem.classList.add('checked');
