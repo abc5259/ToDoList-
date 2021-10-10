@@ -189,6 +189,7 @@ class AddTaskData {
         this.bodyElem.classList.add('added-task-ul');
         this.parentNode = parentNode;
         this.dataTask = [];
+        this.checkInput = [];
     }
     show(dataIndex) {
         this.bodyElem.innerHTML = "";
@@ -198,7 +199,7 @@ class AddTaskData {
                 <label class="add-task-title added-task-title" for="${data[dataIndex].task[i]}">
                     <input type="checkbox" id="${data[dataIndex].task[i]}">
                     <span class="checkmark"></span>
-                    ${data[dataIndex].task[i]}
+                    <p>${data[dataIndex].task[i]}</p>
                 </label>
                 <span class="delete-btn">
                     <i class="fas fa-backspace deletBtn-${dataIndex}-${i}"></i>
@@ -207,9 +208,19 @@ class AddTaskData {
             this.dataTask.push(liElem);
             // console.log(this.dataTask);
             this.bodyElem.appendChild(this.dataTask[i]);
-            console.log(this.dataTask[i],this.bodyElem.innerHTML);
+            // console.log(this.dataTask[i],this.bodyElem.innerHTML);
             setTimeout(() => {
-                checkedBoxLineThrough(data[dataIndex].task[i]);
+                if(this.checkInput[i]){
+                    console.log(this.checkInput[i]);
+                    for(let j = 0; j<this.checkInput.length; j++){
+                        const pElem = document.querySelector(`label[for="${data[dataIndex].task[i]}"]`).children[2];
+                        if(this.checkInput[j] == pElem.innerHTML){
+                            document.querySelector(`input[id="${data[dataIndex].task[i]}"]`).checked = true;
+                            document.querySelector(`label[for="${data[dataIndex].task[i]}"]`).classList.add('checked');
+                        }
+                    }
+                }
+                checkedBoxLineThrough(data[dataIndex].task[i],this.checkInput);
                 this.deleteTask(i,dataIndex);
             },30);
         }
@@ -218,12 +229,12 @@ class AddTaskData {
 
     deleteTask(deleteBtnIndex,dataIndex) {
         let deleteBtnElem = document.querySelector(`.deletBtn-${dataIndex}-${deleteBtnIndex}`);
-        console.log(deleteBtnElem);
+        // console.log(deleteBtnElem);
         deleteBtnElem.addEventListener('click', () => {
-            console.log("click");
-            this.dataTask.splice(deleteBtnIndex,1);
+            // console.log("click");
+            this.dataTask = [];
             data[dataIndex].task.splice(deleteBtnIndex,1);
-            // console.log(this.dataTask);
+            // console.log(this.dataTask,data[dataIndex].task);
             this.show(dataIndex);
         });
     }
@@ -250,15 +261,23 @@ function makeElement(element,className) {
     return elementElem;
 }
 
-function checkedBoxLineThrough(idName) {
+function checkedBoxLineThrough(idName,checkInput) {
     const inputElem = document.querySelector(`input[id="${idName}"]`);
     const labelElem = document.querySelector(`label[for="${idName}"]`);
     // console.log(inputElem);
     labelElem.addEventListener('click', (e) => {
-        if(inputElem.checked){
+        if(inputElem.checked && !labelElem.classList.contains('checked')){
             labelElem.classList.add('checked');
+            checkInput.push(labelElem.children[2].innerHTML);
+            console.log(checkInput);
         }else {
             labelElem.classList.remove('checked');
+            for(let i = 0; i <checkInput.length; i++){
+                if(checkInput[i] == labelElem.children[2].innerHTML){
+                    checkInput.splice(i,1);
+                }
+            }
+            console.log(checkInput);
         }
     });
 }
