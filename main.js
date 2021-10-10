@@ -189,7 +189,8 @@ class AddTaskData {
         this.bodyElem.classList.add('added-task-ul');
         this.parentNode = parentNode;
         this.dataTask = [];
-        this.checkInput = [];
+        //checked된 input
+        this.checkedInput = [];
     }
     show(dataIndex) {
         this.bodyElem.innerHTML = "";
@@ -206,21 +207,21 @@ class AddTaskData {
                 </span>
             `
             this.dataTask.push(liElem);
-            // console.log(this.dataTask);
             this.bodyElem.appendChild(this.dataTask[i]);
-            // console.log(this.dataTask[i],this.bodyElem.innerHTML);
             setTimeout(() => {
-                if(this.checkInput[i]){
-                    console.log(this.checkInput[i]);
-                    for(let j = 0; j<this.checkInput.length; j++){
+                // 이미 checked된 inputElem을 다시 생성할때 checked되게 하기
+                if(this.checkedInput[i]){
+                    console.log(this.checkedInput[i]);
+                    for(let j = 0; j<this.checkedInput.length; j++){
                         const pElem = document.querySelector(`label[for="${data[dataIndex].task[i]}"]`).children[2];
-                        if(this.checkInput[j] == pElem.innerHTML){
+                        if(this.checkedInput[j] == pElem.innerHTML){
                             document.querySelector(`input[id="${data[dataIndex].task[i]}"]`).checked = true;
                             document.querySelector(`label[for="${data[dataIndex].task[i]}"]`).classList.add('checked');
                         }
                     }
                 }
-                checkedBoxLineThrough(data[dataIndex].task[i],this.checkInput);
+
+                checkedBoxLineThrough(data[dataIndex].task[i],this.checkedInput);
                 this.deleteTask(i,dataIndex);
             },30);
         }
@@ -261,25 +262,25 @@ function makeElement(element,className) {
     return elementElem;
 }
 
-function checkedBoxLineThrough(idName,checkInput) {
+function checkedBoxLineThrough(idName,checkedInput) {
     const inputElem = document.querySelector(`input[id="${idName}"]`);
     const labelElem = document.querySelector(`label[for="${idName}"]`);
     // console.log(inputElem);
     labelElem.addEventListener('click', (e) => {
         if(inputElem.checked && !labelElem.classList.contains('checked')){
             labelElem.classList.add('checked');
-            if(checkInput) checkInput.push(labelElem.children[2].innerHTML);
-            console.log(checkInput);
+            if(checkedInput) checkedInput.push(labelElem.children[2].innerHTML);
+            console.log(checkedInput);
         }else {
             labelElem.classList.remove('checked');
-            if(checkInput) {
-                for(let i = 0; i <checkInput.length; i++){
-                    if(checkInput[i] == labelElem.children[2].innerHTML){
-                        checkInput.splice(i,1);
+            if(checkedInput) {
+                for(let i = 0; i <checkedInput.length; i++){
+                    if(checkedInput[i] == labelElem.children[2].innerHTML){
+                        checkedInput.splice(i,1);
                     }
                 }
             }
-            console.log(checkInput);
+            console.log(checkedInput);
         }
     });
 }
