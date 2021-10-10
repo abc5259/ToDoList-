@@ -268,13 +268,15 @@ function checkedBoxLineThrough(idName,checkInput) {
     labelElem.addEventListener('click', (e) => {
         if(inputElem.checked && !labelElem.classList.contains('checked')){
             labelElem.classList.add('checked');
-            checkInput.push(labelElem.children[2].innerHTML);
+            if(checkInput) checkInput.push(labelElem.children[2].innerHTML);
             console.log(checkInput);
         }else {
             labelElem.classList.remove('checked');
-            for(let i = 0; i <checkInput.length; i++){
-                if(checkInput[i] == labelElem.children[2].innerHTML){
-                    checkInput.splice(i,1);
+            if(checkInput) {
+                for(let i = 0; i <checkInput.length; i++){
+                    if(checkInput[i] == labelElem.children[2].innerHTML){
+                        checkInput.splice(i,1);
+                    }
                 }
             }
             console.log(checkInput);
